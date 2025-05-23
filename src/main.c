@@ -114,7 +114,7 @@ void setupULP() {
     const ulp_insn_t ulp_task[] = {
         I_MOVI(R3, RTC_MEM_RECEIVE_BUFFER_ADDRESS / sizeof(uint32_t)),
         M_LABEL(0),
-        I_DELAY(4000),
+        I_DELAY(7333), // Wait out parity bit and stop bit from last frame
         M_LABEL(1),
         I_RD_REG(RTC_GPIO_IN_REG, RTC_GPIO_IN_NEXT_S + RTC_GPIO_RX, RTC_GPIO_IN_NEXT_S + RTC_GPIO_RX), // Read RX pin
         M_BGE(1, 1), // Wait for start bit
