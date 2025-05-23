@@ -32,10 +32,14 @@ SemaphoreHandle_t send_success_semaphore = NULL;
 
 void on_data_sent(const uint8_t* mac_addr, esp_now_send_status_t status) {
     if (status == ESP_NOW_SEND_SUCCESS) {
+        #ifdef DEBUG
         puts("Delivery success");
+        #endif
         send_success = true;
     } else {
+        #ifdef DEBUG
         puts("Delivery failed");
+        #endif
         send_success = false;
     }
 
@@ -43,14 +47,18 @@ void on_data_sent(const uint8_t* mac_addr, esp_now_send_status_t status) {
 }
 
 bool send_data_packet(const DataPacket packet_to_send) {
+    #ifdef DEBUG
     printf("Sending Packet - Seq: %lu, Data: ", packet_to_send.sequence_number);
     for (uint8_t i = 0; i < 246; i++) {
         printf("%02X", packet_to_send.data[i]);
     }
     putchar('\n');
+    #endif
 
     if (esp_now_send(receiver_address, (uint8_t*)&packet_to_send, sizeof(DataPacket)) != ESP_OK) {
+        #ifdef DEBUG
         puts("ESP-NOW send command failed immediately");
+        #endif
         return false;
     }
 
@@ -85,7 +93,9 @@ void setup_esp_now() {
     peer_info.encrypt = false;
 
     ESP_ERROR_CHECK(esp_now_add_peer(&peer_info));
+    #ifdef DEBUG
     puts("Sender ready");
+    #endif
 }
 
 void setupULP() {
