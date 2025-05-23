@@ -7,6 +7,7 @@
 #include <nvs.h>
 #include <nvs_flash.h>
 #include <sdkconfig.h>
+#include <soc/rtc_cntl_reg.h>
 #include <soc/rtc_io_reg.h>
 #include <string.h>
 #include "config.h"
@@ -192,6 +193,7 @@ void setupULP() {
 }
 
 void app_main() {
+    REG_CLR_BIT(RTC_CNTL_BROWN_OUT_REG, RTC_CNTL_BROWN_OUT_ENA);
     bool is_first_run = !ulp_running;
 
     if (is_first_run) {
