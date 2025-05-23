@@ -2,17 +2,18 @@
 #include <esp_sleep.h>
 #include <esp32/ulp.h>
 #include <driver/rtc_io.h>
+#include <sdkconfig.h>
 #include <soc/rtc_io_reg.h>
 #include <string.h>
 #include "config.h"
 
-#define RTC_MEM_RECEIVE_BUFFER_ADDRESS 0x1000
+RTC_DATA_ATTR bool ulp_running = false;
+RTC_DATA_ATTR uint8_t rx_buffer[246];
+#define RTC_MEM_ULP_PROGRAM_ADDRESS 0x100
+#define RTC_MEM_RECEIVE_BUFFER_ADDRESS 0x300
 // BAUD_RATE 2400
 // ULP_CLOCK_SPEED 8000000
 // Should be 3333.33 clock cycles per bit
-
-RTC_DATA_ATTR bool ulp_running = false;
-RTC_DATA_ATTR uint8_t rx_buffer[246]; // Woops, this is at the exact same location as the ULP program code
 
 void setupULP() {
     gpio_config_t pin_config = {
@@ -100,10 +101,10 @@ void setupULP() {
         M_BX(0)
     };
 
+    memset(RTC_SLOW_MEM, 0, CONFIG_ULP_COPROC_RESERVE_MEM);
     size_t size = sizeof(ulp_task) / sizeof(ulp_insn_t);
-    ulp_process_macros_and_load(0, ulp_task, &size);
-    memset(&(RTC_SLOW_MEM[RTC_MEM_RECEIVE_BUFFER_ADDRESS / sizeof(uint32_t)]), 0, 246 * sizeof(uint32_t));
-    ulp_run(0);
+    ulp_process_macros_and_load(RTC_MEM_ULP_PROGRAM_ADDRESS / sizeof(uint32_t), ulp_task, &size);
+    ulp_run(RTC_MEM_ULP_PROGRAM_ADDRESS / sizeof(uint32_t));
     ulp_running = true;
 }
 
@@ -120,7 +121,8 @@ void app_main() {
         uint8_t c = rx_buffer[i];
         putchar((char)c);
     }
-    putchar('\n');
+    fflush(stdout);
+
     esp_deep_sleep_start();
 }
 
