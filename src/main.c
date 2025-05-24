@@ -18,8 +18,8 @@ RTC_DATA_ATTR uint32_t sequence_number = 0;
 #define RTC_MEM_ULP_PROGRAM_ADDRESS 0x100
 #define RTC_MEM_RECEIVE_BUFFER_ADDRESS 0x300
 // BAUD_RATE 2400
-// ULP_CLOCK_SPEED 8000000
-// Should be 3333.33 clock cycles per bit
+// ULP_CLOCK_SPEED 8500000
+// Should be 3541.66 clock cycles per bit
 
 const uint8_t receiver_address[6] = RECEIVER_ADDRESS;
 
@@ -125,49 +125,49 @@ void setupULP() {
         // Read the 1. bit from RX into R2
         I_RD_REG(RTC_GPIO_IN_REG, RTC_GPIO_IN_NEXT_S + RTC_GPIO_RX, RTC_GPIO_IN_NEXT_S + RTC_GPIO_RX),
         I_MOVR(R2, R0),
-        I_DELAY(3333),
+        I_DELAY(3541 - 8 - 6),
 
         // Read the 2. bit from RX and OR it onto R2
         I_RD_REG(RTC_GPIO_IN_REG, RTC_GPIO_IN_NEXT_S + RTC_GPIO_RX, RTC_GPIO_IN_NEXT_S + RTC_GPIO_RX),
         I_LSHI(R1, R0, 1),
         I_ORR(R0, R1, R2),
         I_MOVR(R2, R0),
-        I_DELAY(3333),
+        I_DELAY(3541 - 8 - 6 - 6 - 6),
 
         // Read the 3. bit from RX and OR it onto R2
         I_RD_REG(RTC_GPIO_IN_REG, RTC_GPIO_IN_NEXT_S + RTC_GPIO_RX, RTC_GPIO_IN_NEXT_S + RTC_GPIO_RX),
         I_LSHI(R1, R0, 2),
         I_ORR(R0, R1, R2),
         I_MOVR(R2, R0),
-        I_DELAY(3333),
+        I_DELAY(3541 - 8 - 6 - 6 - 6),
 
         // Read the 4. bit from RX and OR it onto R2
         I_RD_REG(RTC_GPIO_IN_REG, RTC_GPIO_IN_NEXT_S + RTC_GPIO_RX, RTC_GPIO_IN_NEXT_S + RTC_GPIO_RX),
         I_LSHI(R1, R0, 3),
         I_ORR(R0, R1, R2),
         I_MOVR(R2, R0),
-        I_DELAY(3333),
+        I_DELAY(3541 - 8 - 6 - 6 - 6),
 
         // Read the 5. bit from RX and OR it onto R2
         I_RD_REG(RTC_GPIO_IN_REG, RTC_GPIO_IN_NEXT_S + RTC_GPIO_RX, RTC_GPIO_IN_NEXT_S + RTC_GPIO_RX),
         I_LSHI(R1, R0, 4),
         I_ORR(R0, R1, R2),
         I_MOVR(R2, R0),
-        I_DELAY(3333),
+        I_DELAY(3541 - 8 - 6 - 6 - 6),
 
         // Read the 6. bit from RX and OR it onto R2
         I_RD_REG(RTC_GPIO_IN_REG, RTC_GPIO_IN_NEXT_S + RTC_GPIO_RX, RTC_GPIO_IN_NEXT_S + RTC_GPIO_RX),
         I_LSHI(R1, R0, 5),
         I_ORR(R0, R1, R2),
         I_MOVR(R2, R0),
-        I_DELAY(3333),
+        I_DELAY(3541 - 8 - 6 - 6 - 6),
 
         // Read the 7. bit from RX and OR it onto R2
         I_RD_REG(RTC_GPIO_IN_REG, RTC_GPIO_IN_NEXT_S + RTC_GPIO_RX, RTC_GPIO_IN_NEXT_S + RTC_GPIO_RX),
         I_LSHI(R1, R0, 6),
         I_ORR(R0, R1, R2),
         I_MOVR(R2, R0),
-        I_DELAY(3333),
+        I_DELAY(3541 - 8 - 6 - 6 - 6),
 
         // Read the 8. bit from RX, OR it together with R2 and place the result into R0
         I_RD_REG(RTC_GPIO_IN_REG, RTC_GPIO_IN_NEXT_S + RTC_GPIO_RX, RTC_GPIO_IN_NEXT_S + RTC_GPIO_RX),
