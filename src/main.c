@@ -69,6 +69,7 @@ void setup_esp_now() {
     ESP_ERROR_CHECK(esp_wifi_set_storage(WIFI_STORAGE_RAM));
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
     ESP_ERROR_CHECK(esp_wifi_start());
+    ESP_ERROR_CHECK(esp_wifi_set_channel(WIFI_CHANNEL, WIFI_SECOND_CHAN_NONE));
 
     ESP_ERROR_CHECK(esp_now_init());
 
@@ -79,7 +80,8 @@ void setup_esp_now() {
     esp_now_peer_info_t peer_info;
     memset(&peer_info, 0, sizeof(peer_info));
     memcpy(peer_info.peer_addr, receiver_address, 6);
-    peer_info.channel = 0;
+    peer_info.channel = WIFI_CHANNEL;
+    peer_info.ifidx = WIFI_IF_STA;
     peer_info.encrypt = false;
 
     ESP_ERROR_CHECK(esp_now_add_peer(&peer_info));
