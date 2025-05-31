@@ -70,6 +70,9 @@ void setup_esp_now() {
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
     ESP_ERROR_CHECK(esp_wifi_start());
     ESP_ERROR_CHECK(esp_wifi_set_channel(WIFI_CHANNEL, WIFI_SECOND_CHAN_NONE));
+    #ifdef ENABLE_WIFI_LONG_RANGE
+    ESP_ERROR_CHECK(esp_wifi_set_protocol(WIFI_IF_STA, WIFI_PROTOCOL_LR));
+    #endif
 
     ESP_ERROR_CHECK(esp_now_init());
 
@@ -85,6 +88,16 @@ void setup_esp_now() {
     peer_info.encrypt = false;
 
     ESP_ERROR_CHECK(esp_now_add_peer(&peer_info));
+
+    #ifdef ENABLE_WIFI_LONG_RANGE
+    esp_now_rate_config_t rate_config = {
+        .phymode = WIFI_PHY_MODE_LR,
+        .rate = WIFI_PHY_RATE_LORA_500K,
+        .ersu = true, // Extended Rate Single User
+        .dcm = true // Dual Carrier Modulation
+    };
+    ESP_ERROR_CHECK(esp_now_set_peer_rate_config(receiver_address, &rate_config));
+    #endif
     #ifdef DEBUG
     puts("Sender ready");
     #endif
